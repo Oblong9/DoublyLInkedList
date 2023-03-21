@@ -1,6 +1,9 @@
 package adts;
 
+import java.util.Iterator;
+
 import interfaces.ListInterface;
+import iterators.DLLIterator;
 import nodes.DLLNode;
 
 public class DLLList<E> implements ListInterface<E>
@@ -12,6 +15,7 @@ public class DLLList<E> implements ListInterface<E>
     protected DLLNode<E> previous;
     protected boolean found;
     protected int numElements;
+    protected int iterationType = 1;
 
     @Override
     public void add(E element) {
@@ -21,10 +25,51 @@ public class DLLList<E> implements ListInterface<E>
     @Override
     public boolean remove(E element) {
 
-        return false;
+        find(element);
+
+        if (found) {
+
+            if (head == tail) {
+                head = null;
+                tail = null;
+            } else if (head == element) {
+                head.getNext().setPrev(null);
+                head = head.getNext();
+            } else if (tail == element) {
+                tail.getPrev().setNext(null);
+                tail = tail.getPrev();
+            }
+
+            else {
+                location.getPrev().setNext(location.getNext());
+                location.getNext().setPrev(location.getPrev());
+            }
+            numElements--;
+        }
+        return found;
     }
 
-    // START BELOW
+    public Iterator<E> iterator() {
+        if (iterationType == 1) {
+            return new DLLIterator<E>(this.head, 1);
+        } else if (iterationType == -1) {
+            return new DLLIterator<E>(this.tail, -1);
+        }
+        return new DLLIterator<E>(this.head, 0);
+    }
+
+    public void setForwardIteration() {
+        this.iterationType = 1;
+    }
+
+    public void setReverseIteration() {
+        this.iterationType = -1;
+    }
+
+    public void setForwardReverseIteration() {
+        this.iterationType = 0;
+    }
+    
     // Helper class for searching list
     protected void find(E target) {
         found = false;
