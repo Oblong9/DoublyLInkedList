@@ -84,7 +84,7 @@ public class DLLList<E> implements ListInterface<E>
             } else {
                 previous = location;
                 location = location.getNext();
-                next = location.getNext();
+                next = location;
             }
         }
     }
