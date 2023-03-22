@@ -17,9 +17,22 @@ public class DLLList<E> implements ListInterface<E>
     protected int numElements;
     protected int iterationType = 1;
 
+    // Provided by Remove Group
     @Override
     public void add(E element) {
-        
+
+        DLLNode<E> newNode = new DLLNode<>(element);
+
+        if (head == null) {
+            head = newNode;
+            tail = head;
+        } else {
+            newNode.setPrev(tail);
+            tail.setNext(newNode);
+        }
+
+        tail = newNode;
+        numElements++;
     }
 
     @Override
