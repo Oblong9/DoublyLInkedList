@@ -99,7 +99,7 @@ public class DLLList<E extends Comparable<E>> implements ListInterface<E>, Itera
         System.out.println();
 
         if (found) {
-
+            /* Broken
             if (head == tail) {
                 head = null;
                 tail = null;
@@ -107,6 +107,18 @@ public class DLLList<E extends Comparable<E>> implements ListInterface<E>, Itera
                 head.getNext().setPrev(null);
                 head = head.getNext();
             } else if (tail == element) {
+                tail.getPrev().setNext(null);
+                tail = tail.getPrev();
+            }
+            */
+
+            if (head == tail) {
+                head = null;
+                tail = null;
+            } else if (head == location) {
+                head.getNext().setPrev(null);
+                head = head.getNext();
+            } else if (tail == location) {
                 tail.getPrev().setNext(null);
                 tail = tail.getPrev();
             }
