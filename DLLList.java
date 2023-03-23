@@ -6,7 +6,7 @@ import interfaces.ListInterface;
 import iterators.DLLIterator;
 import nodes.DLLNode;
 
-public class DLLList<E> implements ListInterface<E>
+public class DLLList<E extends Comparable<E>> implements ListInterface<E>
 {
     protected DLLNode<E> head;
     protected DLLNode<E> tail;
@@ -17,21 +17,75 @@ public class DLLList<E> implements ListInterface<E>
     protected int numElements;
     protected int iterationType = 1;
 
-    // Provided by Remove Group
+    // lastAdded is used to optimize the add method by remembering the last node
+    // added and
+    // using that as a starting point
+    protected DLLNode<E> lastAdded;
+
     @Override
     public void add(E element) {
-
         DLLNode<E> newNode = new DLLNode<>(element);
-
-        if (head == null) {
+        if (lastAdded == null) {
             head = newNode;
-            tail = head;
-        } else {
-            newNode.setPrev(tail);
-            tail.setNext(newNode);
-        }
+            tail = newNode;
+        } else if (lastAdded.getData().compareTo(element) < 0) {
+            // Last added is less than new node, so loop through list until we find a node
+            // greater than new node
+            DLLNode<E> ptr = lastAdded;
+            while (ptr != null) {
+                if (ptr.getData().compareTo(element) > 0) {
+                    // Found a node greater than new node, so insert new node before it
+                    newNode.setNext(ptr);
+                    newNode.setPrev(ptr.getPrev());
+                    ptr.setPrev(newNode);
+                    if (newNode.getPrev() != null) {
+                        newNode.getPrev().setNext(newNode);
+                    }
+                    break;
+                }
+                ptr = ptr.getNext();
+            }
 
-        tail = newNode;
+            // If we didn't find a node greater than new node, then new node is the new tail
+            if (ptr == null) {
+                tail.setNext(newNode);
+                newNode.setPrev(tail);
+                tail = newNode;
+            }
+        } else if (lastAdded.getData().compareTo(element) > 0) {
+            // Last added is greater than new node, so loop through list until we find a
+            // node less than new node
+            DLLNode<E> ptr = lastAdded;
+            while (ptr != null) {
+                if (ptr.getData().compareTo(element) < 0) {
+                    // Found a node less than new node, so insert new node after it
+                    newNode.setPrev(ptr);
+                    newNode.setNext(ptr.getNext());
+                    ptr.setNext(newNode);
+                    if (newNode.getNext() != null) {
+                        newNode.getNext().setPrev(newNode);
+                    }
+                    break;
+                }
+                ptr = ptr.getPrev();
+            }
+
+            // If we didn't find a node less than new node, then new node is the new head
+            if (ptr == null) {
+                head.setPrev(newNode);
+                newNode.setNext(head);
+                head = newNode;
+            }
+        } else {
+            // Last added is equal to new node, so insert new node after last added
+            newNode.setPrev(lastAdded);
+            newNode.setNext(lastAdded.getNext());
+            lastAdded.setNext(newNode);
+            if (newNode.getNext() != null) {
+                newNode.getNext().setPrev(newNode);
+            }
+        }
+        lastAdded = newNode;
         numElements++;
     }
 
