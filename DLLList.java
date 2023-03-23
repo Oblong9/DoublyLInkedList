@@ -2,11 +2,13 @@ package adts;
 
 import java.util.Iterator;
 
+import javax.lang.model.element.Element;
+
 import interfaces.ListInterface;
 import iterators.DLLIterator;
 import nodes.DLLNode;
 
-public class DLLList<E extends Comparable<E>> implements ListInterface<E>
+public class DLLList<E extends Comparable<E>> implements ListInterface<E>, Iterable<E>
 {
     protected DLLNode<E> head;
     protected DLLNode<E> tail;
@@ -93,6 +95,8 @@ public class DLLList<E extends Comparable<E>> implements ListInterface<E>
     public boolean remove(E element) {
 
         find(element);
+
+        System.out.println();
 
         if (found) {
 
